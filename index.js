@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 // const jwt = require('jsonwebtoken');
 // const cookieParser = require('cookie-parser');
@@ -42,6 +42,19 @@ async function run() {
       catch{
         console.log(req);
       }
+    })
+
+    // ALL GET HERE
+    app.get('/addjobs', async(req,res)=>{
+      const result = await alljobs.find().toArray();
+      res.send(result)
+    })
+
+    app.get('/addjobs/:category', async(req,res)=>{
+      const category = req.params.category
+      const query = { category: category };
+      const result = await alljobs.find(query).toArray();
+      res.send(result)
     })
 
    
