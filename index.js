@@ -2,14 +2,14 @@ const express = require('express');
 const cors = require('cors')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config()
-const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
+// const jwt = require('jsonwebtoken');
+// const cookieParser = require('cookie-parser');
 const port = process.env.PORT || 5000;
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.j7hulja.mongodb.net/?retryWrites=true&w=majority`;
@@ -25,6 +25,28 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+
+    // ALL DATABASE DECALERE
+
+    const databse = client.db("Worky")
+    const alljobs = databse.collection("jobCollection")
+  
+    // ALL POST HERT
+
+    app.post('/addjobs', async(req,res)=>{
+      try{
+        const job = req.body
+      const result = await alljobs.insertOne(job);
+      res.send(result)
+      }
+      catch{
+        console.log(req);
+      }
+    })
+
+   
+
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
   }
