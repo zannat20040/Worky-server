@@ -30,6 +30,7 @@ async function run() {
 
     const databse = client.db("Worky")
     const alljobs = databse.collection("jobCollection")
+    const allBids = databse.collection("bidsCollection")
   
     // ALL POST HERT
 
@@ -37,6 +38,17 @@ async function run() {
       try{
         const job = req.body
       const result = await alljobs.insertOne(job);
+      res.send(result)
+      }
+      catch{
+        console.log(req);
+      }
+    })
+
+    app.post('/bids', async(req,res)=>{
+      try{
+        const job = req.body
+      const result = await allBids.insertOne(job);
       res.send(result)
       }
       catch{
@@ -56,8 +68,15 @@ async function run() {
       const result = await alljobs.find(query).toArray();
       res.send(result)
     })
-
    
+    // app.get('/addjobs/:id', async(req,res)=>{
+    //   const jobid = req.params.title
+    //   console.log(jobid)
+    //   // const query = { _id: new ObjectId(id) };
+    //   // const result = await alljobs.find(query).toArray();
+    //   // console.log(result)
+    //   // res.send(result)
+    // })
 
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
