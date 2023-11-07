@@ -31,56 +31,77 @@ async function run() {
     const databse = client.db("Worky")
     const alljobs = databse.collection("jobCollection")
     const allBids = databse.collection("bidsCollection")
-  
+
     // ALL POST HERT
 
-    app.post('/addjobs', async(req,res)=>{
-      try{
+    app.post('/addjobs', async (req, res) => {
+      try {
         const job = req.body
-      const result = await alljobs.insertOne(job);
-      res.send(result)
+        const result = await alljobs.insertOne(job);
+        res.send(result)
       }
-      catch{
+      catch {
         console.log(req);
       }
     })
 
-    app.post('/bids', async(req,res)=>{
-      try{
+    app.post('/bids', async (req, res) => {
+      try {
         const job = req.body
-      const result = await allBids.insertOne(job);
-      res.send(result)
+        const result = await allBids.insertOne(job);
+        res.send(result)
       }
-      catch{
+      catch {
         console.log(req);
       }
     })
 
     // ALL GET HERE
-    app.get('/addjobs', async(req,res)=>{
+    app.get('/addjobs', async (req, res) => {
       const result = await alljobs.find().toArray();
       res.send(result)
     })
 
-    app.get('/addjobs/:category', async(req,res)=>{
+    app.get('/addjobs/:category', async (req, res) => {
       const category = req.params.category
       const query = { category: category };
       const result = await alljobs.find(query).toArray();
       res.send(result)
     })
-    app.get('/bids', async(req,res)=>{
+
+
+    app.get('/bids', async (req, res) => {
       const result = await allBids.find().toArray();
       res.send(result)
     })
 
-    // app.get('/addjobs/:id', async(req,res)=>{
-    //   const jobid = req.params.title
-    //   console.log(jobid)
-    //   // const query = { _id: new ObjectId(id) };
-    //   // const result = await alljobs.find(query).toArray();
-    //   // console.log(result)
-    //   // res.send(result)
-    // })
+    //  ALL PUT REQUEST
+
+    app.put('/addjobs/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) };
+
+      const updatedJobDetails = req.body;
+
+      const updateJob = {
+        $set: {
+
+          title: updatedJobDetails.title,
+          description: updatedJobDetails.description,
+          requirement: updatedJobDetails.requirement,
+          email: updatedJobDetails.email,
+          category: updatedJobDetails.category,
+          deadline: updatedJobDetails.deadline,
+          minimum: updatedJobDetails.minimum,
+          maximum: updatedJobDetails.maximum,
+          photo: updatedJobDetails.photo
+        }
+      }
+
+      const result = await alljobs.updateOne(query, updateJob);
+      res.send(result);
+
+    })
 
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -90,11 +111,12 @@ async function run() {
 run().catch(console.dir);
 
 
+
 app.get('/', (req, res) => {
-    res.send('Hello World!')
-    console.log('get is working')
-  })
-  
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-  })
+  res.send('Hello World!')
+  console.log('get is working')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
