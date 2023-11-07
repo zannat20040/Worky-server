@@ -35,25 +35,15 @@ async function run() {
     // ALL POST HERT
 
     app.post('/addjobs', async (req, res) => {
-      try {
-        const job = req.body
-        const result = await alljobs.insertOne(job);
-        res.send(result)
-      }
-      catch {
-        console.log(req);
-      }
+      const job = req.body
+      const result = await alljobs.insertOne(job);
+      res.send(result)
     })
 
     app.post('/bids', async (req, res) => {
-      try {
-        const job = req.body
-        const result = await allBids.insertOne(job);
-        res.send(result)
-      }
-      catch {
-        console.log(req);
-      }
+      const job = req.body
+      const result = await allBids.insertOne(job);
+      res.send(result)
     })
 
     // ALL GET HERE
@@ -62,9 +52,10 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/addjobs/:category', async (req, res) => {
-      const category = req.params.category
-      const query = { category: category };
+    app.get('/addjobs/:id', async (req, res) => {
+      const jobId = req.params.id
+
+      const query = { _id: new ObjectId(jobId) };
       const result = await alljobs.find(query).toArray();
       res.send(result)
     })
