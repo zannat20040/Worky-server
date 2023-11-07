@@ -68,7 +68,11 @@ async function run() {
       const result = await alljobs.find(query).toArray();
       res.send(result)
     })
-   
+    app.get('/bids', async(req,res)=>{
+      const result = await allBids.find().toArray();
+      res.send(result)
+    })
+
     // app.get('/addjobs/:id', async(req,res)=>{
     //   const jobid = req.params.title
     //   console.log(jobid)
