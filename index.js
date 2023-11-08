@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:5173"],
+  origin: ["https://worky-7a37f.firebaseapp.com", "https://worky-7a37f.web.app"],
   credentials: true
 }));
 app.use(cookieParser());
@@ -103,17 +103,17 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/bids',verify, async (req, res) => {
+    app.get('/bids', verify, async (req, res) => {
       const result = await allBids.find().toArray();
       res.send(result)
     })
-    app.get('/bids/:id',verify, async (req, res) => {
+    app.get('/bids/:id', verify, async (req, res) => {
       const bidId = req.params.id
       const query = { _id: new ObjectId(bidId) };
       const result = await allBids.find(query).toArray();
       res.send(result)
     })
-    app.get('/postedJobs',verify, async (req, res) => {
+    app.get('/postedJobs', verify, async (req, res) => {
       const result = await allBids.find().toArray();
       res.send(result)
     })
