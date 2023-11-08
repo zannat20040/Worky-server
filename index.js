@@ -60,13 +60,37 @@ async function run() {
       res.send(result)
     })
 
-
     app.get('/bids', async (req, res) => {
+      const result = await allBids.find().toArray();
+      res.send(result)
+    })
+    app.get('/bids/:id', async (req, res) => {
+      const bidId = req.params.id
+      const query = { _id: new ObjectId(bidId) };
+      const result = await allBids.find(query).toArray();
+      res.send(result)
+    })
+    app.get('/postedJobs', async (req, res) => {
       const result = await allBids.find().toArray();
       res.send(result)
     })
 
     //  ALL PUT REQUEST
+
+    app.put('/bids/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) };
+      const updatedStatus = req.body;
+      const updateJobStatus = {
+        $set: {
+          status: updatedStatus.status
+        }
+      }
+      // console.log(updateJobStatus)
+      const result = await allBids.updateOne(query, updateJobStatus);
+      res.send(result);
+
+    })
 
     app.put('/addjobs/:id', async (req, res) => {
       const id = req.params.id
@@ -93,6 +117,18 @@ async function run() {
       res.send(result);
 
     })
+
+
+    // ALL DELETE REQUEST
+
+    app.delete('/addjobs/:id', async (req, res) => {
+      const id = req.params.id
+      console.log(id)
+      // const query = { _id: id }
+      // const remove = await cartCollection.deleteOne(query);
+      // res.send(remove)
+    })
+
 
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
