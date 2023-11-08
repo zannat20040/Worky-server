@@ -2,17 +2,14 @@ const express = require('express');
 const cors = require('cors')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
-const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
+// const jwt = require('jsonwebtoken');
+// const cookieParser = require('cookie-parser');
 const port = process.env.PORT || 5000;
 const app = express();
 
+app.use(cors());
+// app.use(cookieParser());
 app.use(express.json());
-app.use(cors({
-  origin: ["https://worky-7a37f.firebaseapp.com", "https://worky-7a37f.web.app"],
-  credentials: true
-}));
-app.use(cookieParser());
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.j7hulja.mongodb.net/?retryWrites=true&w=majority`;
@@ -37,40 +34,40 @@ async function run() {
 
     // ALL JWT
 
-    app.post('/jwt', async (req, res) => {
-      const body = req.body
+    // app.post('/jwt', async (req, res) => {
+    //   const body = req.body
 
-      const token = jwt.sign(body, process.env.SECRET, { expiresIn: '10h' })
-      const expireDate = new Date()
-      expireDate.setDate(expireDate.getDate() + 7)
+    //   const token = jwt.sign(body, process.env.SECRET, { expiresIn: '10h' })
+    //   const expireDate = new Date()
+    //   expireDate.setDate(expireDate.getDate() + 7)
 
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        expires: expireDate
-      }).send({ msg: "success" })
+    //   res.cookie("token", token, {
+    //     httpOnly: true,
+    //     secure: false,
+    //     expires: expireDate
+    //   }).send({ msg: "success" })
 
-    })
+    // })
 
 
-    const verify = async (req, res, next) => {
-      const token = req.cookies?.token
-      if (!token) {
-        res.status(401).send({ status: "Unauthorized Access", code: "401" })
+    // const verify = async (req, res, next) => {
+    //   const token = req.cookies?.token
+    //   if (!token) {
+    //     res.status(401).send({ status: "Unauthorized Access", code: "401" })
 
-        return;
-      }
-      jwt.verify(token, process.env.SECRET, (error, decode) => {
-        if (error) {
-          res.status(401).send({ status: "Unauthorized Access", code: "401" })
-        }
-        else {
-          // console.log(decode)
-          req.decode = decode
-        }
-      })
-      next()
-    }
+    //     return;
+    //   }
+    //   jwt.verify(token, process.env.SECRET, (error, decode) => {
+    //     if (error) {
+    //       res.status(401).send({ status: "Unauthorized Access", code: "401" })
+    //     }
+    //     else {
+    //       // console.log(decode)
+    //       req.decode = decode
+    //     }
+    //   })
+    //   next()
+    // }
 
 
 
@@ -95,7 +92,7 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/addjobs/:id', verify, async (req, res) => {
+    app.get('/addjobs/:id',  async (req, res) => {
       console.log(req.decode)
       const jobId = req.params.id
       const query = { _id: new ObjectId(jobId) };
@@ -103,17 +100,17 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/bids', verify, async (req, res) => {
+    app.get('/bids',  async (req, res) => {
       const result = await allBids.find().toArray();
       res.send(result)
     })
-    app.get('/bids/:id', verify, async (req, res) => {
+    app.get('/bids/:id',  async (req, res) => {
       const bidId = req.params.id
       const query = { _id: new ObjectId(bidId) };
       const result = await allBids.find(query).toArray();
       res.send(result)
     })
-    app.get('/postedJobs', verify, async (req, res) => {
+    app.get('/postedJobs',  async (req, res) => {
       const result = await allBids.find().toArray();
       res.send(result)
     })
@@ -164,17 +161,13 @@ async function run() {
 
     // ALL DELETE REQUEST
 
-    app.delete('/addjobs/:id', async (req, res) => {
+    app.delete('/deletejobs/:id', async (req, res) => {
       const id = req.params.id
+      console.log(id)
       const query = { _id: new ObjectId(id) };
-      const result = await confirOrdersDB.deleteOne(query);
+      const result = await alljobs.deleteOne(query);
 
-      if (result.deletedCount > 0) {
-        console.log("Successfully deleted one document.");
-        res.send(result)
-      } else {
-        console.log("No documents matched the query. Deleted 0 documents.");
-      }
+    res.send(result)
     })
 
 
