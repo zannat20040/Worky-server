@@ -92,7 +92,7 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/addjobs/:id',  async (req, res) => {
+    app.get('/addjobs/:id', async (req, res) => {
       console.log(req.decode)
       const jobId = req.params.id
       const query = { _id: new ObjectId(jobId) };
@@ -100,17 +100,17 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/bids',  async (req, res) => {
+    app.get('/bids', async (req, res) => {
       const result = await allBids.find().toArray();
       res.send(result)
     })
-    app.get('/bids/:id',  async (req, res) => {
+    app.get('/bids/:id', async (req, res) => {
       const bidId = req.params.id
       const query = { _id: new ObjectId(bidId) };
       const result = await allBids.find(query).toArray();
       res.send(result)
     })
-    app.get('/postedJobs',  async (req, res) => {
+    app.get('/postedJobs', async (req, res) => {
       const result = await allBids.find().toArray();
       res.send(result)
     })
@@ -167,9 +167,24 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await alljobs.deleteOne(query);
 
-    res.send(result)
+      res.send(result)
     })
 
+
+    // SORTING
+
+    app.get('/sort', async (req, res) => {
+      const statusOrder = {
+        'complete': 1,
+        'in progress': 2,
+        'pending': 3,
+        'rejected': 4
+      };
+      const result = await allBids.find({}, { status: 1 }).toArray();
+      const sortedResult = result.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+
+      res.send(sortedResult);
+    });
 
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
